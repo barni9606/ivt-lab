@@ -40,34 +40,7 @@ public class GT4500 implements SpaceShip {
 
     switch (firingMode) {
       case SINGLE:
-        if (wasPrimaryFiredLast) {
-          // try to fire the secondary first
-          if (! secondaryTorpedoStore.isEmpty()) {
-            firingSuccess = fireTorpedoFromTorpedoStore(secondaryTorpedoStore);
-          } else {
-            // although primary was fired last time, but the secondary is empty
-            // thus try to fire primary again
-            if (! primaryTorpedoStore.isEmpty()) {
-              firingSuccess = fireTorpedoFromTorpedoStore(primaryTorpedoStore);
-            }
-
-            // if both of the stores are empty, nothing can be done, return failure
-          }
-        }
-        else {
-          // try to fire the primary first
-          if (! primaryTorpedoStore.isEmpty()) {
-            firingSuccess = fireTorpedoFromTorpedoStore(primaryTorpedoStore);
-          } else {
-            // although secondary was fired last time, but primary is empty
-            // thus try to fire secondary again
-            if (! secondaryTorpedoStore.isEmpty()) {
-              firingSuccess = fireTorpedoFromTorpedoStore(secondaryTorpedoStore);
-            }
-
-            // if both of the stores are empty, nothing can be done, return failure
-          }
-        }
+        firingSuccess = fireSingle();
         break;
 
       case ALL:
@@ -99,6 +72,39 @@ public class GT4500 implements SpaceShip {
         wasPrimaryFiredLast = false;
       }
 
+    }
+    return firingSuccess;
+  }
+
+  private boolean fireSingle() {
+    boolean firingSuccess = false;
+    if (wasPrimaryFiredLast) {
+      // try to fire the secondary first
+      if (! secondaryTorpedoStore.isEmpty()) {
+        firingSuccess = fireTorpedoFromTorpedoStore(secondaryTorpedoStore);
+      } else {
+        // although primary was fired last time, but the secondary is empty
+        // thus try to fire primary again
+        if (! primaryTorpedoStore.isEmpty()) {
+          firingSuccess = fireTorpedoFromTorpedoStore(primaryTorpedoStore);
+        }
+
+        // if both of the stores are empty, nothing can be done, return failure
+      }
+    }
+    else {
+      // try to fire the primary first
+      if (! primaryTorpedoStore.isEmpty()) {
+        firingSuccess = fireTorpedoFromTorpedoStore(primaryTorpedoStore);
+      } else {
+        // although secondary was fired last time, but primary is empty
+        // thus try to fire secondary again
+        if (! secondaryTorpedoStore.isEmpty()) {
+          firingSuccess = fireTorpedoFromTorpedoStore(secondaryTorpedoStore);
+        }
+
+        // if both of the stores are empty, nothing can be done, return failure
+      }
     }
     return firingSuccess;
   }
