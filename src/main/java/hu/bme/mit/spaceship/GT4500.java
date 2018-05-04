@@ -43,15 +43,12 @@ public class GT4500 implements SpaceShip {
         if (wasPrimaryFiredLast) {
           // try to fire the secondary first
           if (! secondaryTorpedoStore.isEmpty()) {
-            firingSuccess = secondaryTorpedoStore.fire(1);
-            wasPrimaryFiredLast = false;
-          }
-          else {
+            firingSuccess = fireTorpedoFromTorpedoStore(secondaryTorpedoStore);
+          } else {
             // although primary was fired last time, but the secondary is empty
             // thus try to fire primary again
             if (! primaryTorpedoStore.isEmpty()) {
-              firingSuccess = primaryTorpedoStore.fire(1);
-              wasPrimaryFiredLast = true;
+              firingSuccess = fireTorpedoFromTorpedoStore(primaryTorpedoStore);
             }
 
             // if both of the stores are empty, nothing can be done, return failure
@@ -60,15 +57,12 @@ public class GT4500 implements SpaceShip {
         else {
           // try to fire the primary first
           if (! primaryTorpedoStore.isEmpty()) {
-            firingSuccess = primaryTorpedoStore.fire(1);
-            wasPrimaryFiredLast = true;
-          }
-          else {
+            firingSuccess = fireTorpedoFromTorpedoStore(primaryTorpedoStore);
+          } else {
             // although secondary was fired last time, but primary is empty
             // thus try to fire secondary again
             if (! secondaryTorpedoStore.isEmpty()) {
-              firingSuccess = secondaryTorpedoStore.fire(1);
-              wasPrimaryFiredLast = false;
+              firingSuccess = fireTorpedoFromTorpedoStore(secondaryTorpedoStore);
             }
 
             // if both of the stores are empty, nothing can be done, return failure
@@ -78,20 +72,34 @@ public class GT4500 implements SpaceShip {
 
       case ALL:
         // try to fire both of the torpedo stores
-        //TODO implement feature
-
         if (! primaryTorpedoStore.isEmpty()) {
-          firingSuccess = primaryTorpedoStore.fire(1);
-          wasPrimaryFiredLast = true;
+
+          firingSuccess = fireTorpedoFromTorpedoStore(primaryTorpedoStore);
         }
         if (! secondaryTorpedoStore.isEmpty()) {
-          firingSuccess = secondaryTorpedoStore.fire(1);
-          wasPrimaryFiredLast = false;
+
+          firingSuccess = fireTorpedoFromTorpedoStore(secondaryTorpedoStore);
         }
 
         break;
     }
 
+    return firingSuccess;
+  }
+
+  private boolean fireTorpedoFromTorpedoStore(TorpedoStore torpedoStore) {
+    boolean firingSuccess = false;
+    if (! torpedoStore.isEmpty()) {
+      firingSuccess = torpedoStore.fire(1);
+    }
+    if (firingSuccess) {
+      if (torpedoStore == primaryTorpedoStore) {
+        wasPrimaryFiredLast = true;
+      } else if (torpedoStore == secondaryTorpedoStore) {
+        wasPrimaryFiredLast = false;
+      }
+
+    }
     return firingSuccess;
   }
 // modositas branch-B
